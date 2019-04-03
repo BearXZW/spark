@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sana.sparkdemo.mapper.PredictTimeMapper" >
+  <resultMap id="BaseResultMap" type="com.sana.sparkdemo.model.PredictTime" >
+    <id column="index" property="index" jdbcType="INTEGER" />
+    <result column="produceTime" property="producetime" jdbcType="TIMESTAMP" />
+    <result column="tomcat_request_count" property="tomcatRequestCount" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    index, produceTime, tomcat_request_count, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from predict_time
+    where index = #{index,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from predict_time
+    where index = #{index,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sana.sparkdemo.model.PredictTime" >
+    insert into predict_time (index, produceTime, tomcat_request_count, 
+      type)
+    values (#{index,jdbcType=INTEGER}, #{producetime,jdbcType=TIMESTAMP}, #{tomcatRequestCount,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sana.sparkdemo.model.PredictTime" >
+    insert into predict_time
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="index != null" >
+        index,
+      </if>
+      <if test="producetime != null" >
+        produceTime,
+      </if>
+      <if test="tomcatRequestCount != null" >
+        tomcat_request_count,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="index != null" >
+        #{index,jdbcType=INTEGER},
+      </if>
+      <if test="producetime != null" >
+        #{producetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tomcatRequestCount != null" >
+        #{tomcatRequestCount,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sana.sparkdemo.model.PredictTime" >
+    update predict_time
+    <set >
+      <if test="producetime != null" >
+        produceTime = #{producetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="tomcatRequestCount != null" >
+        tomcat_request_count = #{tomcatRequestCount,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
+    where index = #{index,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sana.sparkdemo.model.PredictTime" >
+    update predict_time
+    set produceTime = #{producetime,jdbcType=TIMESTAMP},
+      tomcat_request_count = #{tomcatRequestCount,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER}
+    where index = #{index,jdbcType=INTEGER}
+  </update>
+  <!--获取所有的数据-->
+  <select id="getAll" resultMap="BaseResultMap">
+    select * from predict_time
+  </select>
+</mapper>

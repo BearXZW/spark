@@ -32,4 +32,5 @@ public interface UserService {
 
     //删除用户
     int deleteByPrimaryKey(Integer userid);
+
 }

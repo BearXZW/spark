@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sana.sparkdemo.mapper.AssociationRulesMapper" >
+  <resultMap id="BaseResultMap" type="com.sana.sparkdemo.model.AssociationRules" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="antecedent" property="antecedent" jdbcType="VARCHAR" />
+    <result column="consequent" property="consequent" jdbcType="VARCHAR" />
+    <result column="confidence" property="confidence" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, antecedent, consequent, confidence
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from associationrules
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from associationrules
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sana.sparkdemo.model.AssociationRules" >
+    insert into associationrules (id, antecedent, consequent, 
+      confidence)
+    values (#{id,jdbcType=INTEGER}, #{antecedent,jdbcType=VARCHAR}, #{consequent,jdbcType=VARCHAR}, 
+      #{confidence,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sana.sparkdemo.model.AssociationRules" >
+    insert into associationrules
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="antecedent != null" >
+        antecedent,
+      </if>
+      <if test="consequent != null" >
+        consequent,
+      </if>
+      <if test="confidence != null" >
+        confidence,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="antecedent != null" >
+        #{antecedent,jdbcType=VARCHAR},
+      </if>
+      <if test="consequent != null" >
+        #{consequent,jdbcType=VARCHAR},
+      </if>
+      <if test="confidence != null" >
+        #{confidence,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sana.sparkdemo.model.AssociationRules" >
+    update associationrules
+    <set >
+      <if test="antecedent != null" >
+        antecedent = #{antecedent,jdbcType=VARCHAR},
+      </if>
+      <if test="consequent != null" >
+        consequent = #{consequent,jdbcType=VARCHAR},
+      </if>
+      <if test="confidence != null" >
+        confidence = #{confidence,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sana.sparkdemo.model.AssociationRules" >
+    update associationrules
+    set antecedent = #{antecedent,jdbcType=VARCHAR},
+      consequent = #{consequent,jdbcType=VARCHAR},
+      confidence = #{confidence,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--查询所有的数据-->
+  <select id="getAllRules" resultMap="BaseResultMap">
+    select * from associationrules
+  </select>
+</mapper>
