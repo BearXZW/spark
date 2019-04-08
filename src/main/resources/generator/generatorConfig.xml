@@ -42,7 +42,10 @@
         <!--<table tableName="predict_network_source" domainObjectName="PredictNetworkSource" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
         <!--<table tableName="predict_network" domainObjectName="PredictNetwork" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
         <!--<table tableName="freqitemsets" domainObjectName="FreqItemSets" enableCountByExample="false" enableUpdateByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
-        <table tableName="associationrules" domainObjectName="AssociationRules" enableCountByExample="false" enableUpdateByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="sysinfo_cpu" domainObjectName="SysInfoCpu" enableCountByExample="false" enableUpdateByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="sysinfo_jvm" domainObjectName="SysInfoJvm" enableCountByExample="false" enableUpdateByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="sysinfo_memory" domainObjectName="SysInfoMemory" enableCountByExample="false" enableUpdateByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="sysinfo_network" domainObjectName="SysInfoNetwork" enableCountByExample="false" enableUpdateByExample="false"  enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>
 </generatorConfiguration>
 

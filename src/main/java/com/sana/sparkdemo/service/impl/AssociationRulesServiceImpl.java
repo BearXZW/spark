@@ -18,4 +18,6 @@ public class AssociationRulesServiceImpl implements AssociationRulesService {
     public List<AssociationRules> getAllRules(){
         return associationRulesMapper.getAllRules();
     }
+
+
 }

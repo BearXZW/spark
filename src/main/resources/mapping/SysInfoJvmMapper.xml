@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sana.sparkdemo.mapper.SysInfoJvmMapper" >
+  <resultMap id="BaseResultMap" type="com.sana.sparkdemo.model.SysInfoJvm" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="used" property="used" jdbcType="VARCHAR" />
+    <result column="free" property="free" jdbcType="VARCHAR" />
+    <result column="total" property="total" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, createtime, used, free, total
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sysinfo_jvm
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sysinfo_jvm
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sana.sparkdemo.model.SysInfoJvm" >
+    insert into sysinfo_jvm (createtime, used,
+      free, total)
+    values (#{createtime,jdbcType=TIMESTAMP}, #{used,jdbcType=VARCHAR},
+      #{free,jdbcType=VARCHAR}, #{total,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sana.sparkdemo.model.SysInfoJvm" >
+    insert into sysinfo_jvm
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="used != null" >
+        used,
+      </if>
+      <if test="free != null" >
+        free,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="used != null" >
+        #{used,jdbcType=VARCHAR},
+      </if>
+      <if test="free != null" >
+        #{free,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sana.sparkdemo.model.SysInfoJvm" >
+    update sysinfo_jvm
+    <set >
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="used != null" >
+        used = #{used,jdbcType=VARCHAR},
+      </if>
+      <if test="free != null" >
+        free = #{free,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sana.sparkdemo.model.SysInfoJvm" >
+    update sysinfo_jvm
+    set createtime = #{createtime,jdbcType=TIMESTAMP},
+      used = #{used,jdbcType=VARCHAR},
+      free = #{free,jdbcType=VARCHAR},
+      total = #{total,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="SelectByTime" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from sysinfo_jvm
+    <where>
+      <if test="param.startTime!=null">
+        <!--<![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') >= DATE_FORMAT(#{param.startTime}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+        <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') >= #{param.startTime} ]]>
+      </if>
+      <if test="param.endTime!=null">
+        <!--<![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') <= DATE_FORMAT(#{param.endTime}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+        <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') <= #{param.endTime} ]]>
+      </if>
+    </where>
+  </select>
+</mapper>

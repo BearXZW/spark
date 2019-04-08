@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sana.sparkdemo.mapper.SysInfoCpuMapper" >
+  <resultMap id="BaseResultMap" type="com.sana.sparkdemo.model.SysInfoCpu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="userusage" property="userusage" jdbcType="VARCHAR" />
+    <result column="sysusage" property="sysusage" jdbcType="VARCHAR" />
+    <result column="combindusage" property="combindusage" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, createtime, userusage, sysusage, combindusage, count
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sysinfo_cpu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sysinfo_cpu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sana.sparkdemo.model.SysInfoCpu" >
+    insert into sysinfo_cpu (createtime, userusage,
+      sysusage, combindusage, count
+      )
+    values ( #{createtime,jdbcType=TIMESTAMP}, #{userusage,jdbcType=VARCHAR},
+      #{sysusage,jdbcType=VARCHAR}, #{combindusage,jdbcType=VARCHAR}, #{count,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sana.sparkdemo.model.SysInfoCpu" >
+    insert into sysinfo_cpu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="userusage != null" >
+        userusage,
+      </if>
+      <if test="sysusage != null" >
+        sysusage,
+      </if>
+      <if test="combindusage != null" >
+        combindusage,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userusage != null" >
+        #{userusage,jdbcType=VARCHAR},
+      </if>
+      <if test="sysusage != null" >
+        #{sysusage,jdbcType=VARCHAR},
+      </if>
+      <if test="combindusage != null" >
+        #{combindusage,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sana.sparkdemo.model.SysInfoCpu" >
+    update sysinfo_cpu
+    <set >
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userusage != null" >
+        userusage = #{userusage,jdbcType=VARCHAR},
+      </if>
+      <if test="sysusage != null" >
+        sysusage = #{sysusage,jdbcType=VARCHAR},
+      </if>
+      <if test="combindusage != null" >
+        combindusage = #{combindusage,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sana.sparkdemo.model.SysInfoCpu" >
+    update sysinfo_cpu
+    set createtime = #{createtime,jdbcType=TIMESTAMP},
+      userusage = #{userusage,jdbcType=VARCHAR},
+      sysusage = #{sysusage,jdbcType=VARCHAR},
+      combindusage = #{combindusage,jdbcType=VARCHAR},
+      count = #{count,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="SelectByTime" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from sysinfo_cpu
+    <where>
+        <if test="param.startTime!=null">
+          <!--<![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') >= DATE_FORMAT(#{param.startTime}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+          <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') >= #{param.startTime} ]]>
+        </if>
+      <if test="param.endTime!=null">
+        <!--<![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') <= DATE_FORMAT(#{param.endTime}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+        <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') <= #{param.endTime} ]]>
+      </if>
+    </where>
+  </select>
+</mapper>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sana.sparkdemo.mapper.SysInfoNetworkMapper" >
+  <resultMap id="BaseResultMap" type="com.sana.sparkdemo.model.SysInfoNetwork" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="rxtotal" property="rxtotal" jdbcType="VARCHAR" />
+    <result column="txtotal" property="txtotal" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, createtime, address, rxtotal, txtotal
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sysinfo_network
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sysinfo_network
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sana.sparkdemo.model.SysInfoNetwork" >
+    insert into sysinfo_network (createtime, address,
+      rxtotal, txtotal)
+    values (#{createtime,jdbcType=TIMESTAMP}, #{address,jdbcType=VARCHAR},
+      #{rxtotal,jdbcType=VARCHAR}, #{txtotal,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sana.sparkdemo.model.SysInfoNetwork" >
+    insert into sysinfo_network
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="rxtotal != null" >
+        rxtotal,
+      </if>
+      <if test="txtotal != null" >
+        txtotal,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="rxtotal != null" >
+        #{rxtotal,jdbcType=VARCHAR},
+      </if>
+      <if test="txtotal != null" >
+        #{txtotal,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sana.sparkdemo.model.SysInfoNetwork" >
+    update sysinfo_network
+    <set >
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="rxtotal != null" >
+        rxtotal = #{rxtotal,jdbcType=VARCHAR},
+      </if>
+      <if test="txtotal != null" >
+        txtotal = #{txtotal,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sana.sparkdemo.model.SysInfoNetwork" >
+    update sysinfo_network
+    set createtime = #{createtime,jdbcType=TIMESTAMP},
+      address = #{address,jdbcType=VARCHAR},
+      rxtotal = #{rxtotal,jdbcType=VARCHAR},
+      txtotal = #{txtotal,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="SelectByTime" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from sysinfo_network
+    <where>
+      <if test="param.startTime!=null">
+        <!--<![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') >= DATE_FORMAT(#{param.startTime}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+        <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') >= #{param.startTime} ]]>
+      </if>
+      <if test="param.endTime!=null">
+        <!--<![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') <= DATE_FORMAT(#{param.endTime}, '%Y-%m-%d %T:%i:%s')   ]]>-->
+        <![CDATA[  and DATE_FORMAT(createtime, '%Y-%m-%d %T:%i:%s') <= #{param.endTime} ]]>
+      </if>
+    </where>
+  </select>
+</mapper>
