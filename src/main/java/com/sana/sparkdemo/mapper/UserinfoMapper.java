@@ -24,4 +24,7 @@ public interface UserinfoMapper {
 
     //批量删除
     int deleteBatch(List<Integer> ids);
+
+    //获取数据库中用户的数量
+    int getNumofUser();
 }

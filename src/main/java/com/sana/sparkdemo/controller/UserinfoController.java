@@ -1,5 +1,7 @@
 package com.sana.sparkdemo.controller;
 
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sana.sparkdemo.model.User;
 import com.sana.sparkdemo.model.Userinfo;
@@ -11,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.expression.Ids;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -28,7 +27,9 @@ public class UserinfoController {
 
     //增加用户信息
     @PostMapping("/addUserinfo")
-    public Object addUserinfo(@RequestBody Userinfo userinfo){
+    public Object addUserinfo(@RequestBody Map<String,Userinfo> map){
+
+        Userinfo userinfo=map.get("userinfo");
         JSONObject jsonObject=new JSONObject();
 //        List<Userinfo> userinfoForBase=userinfoService.selectByName(userinfo.getRealname());
 //        Userinfo userinfoForBase=userinfoService.selectByPrimaryKey(userinfo.getId());
@@ -57,8 +58,9 @@ public class UserinfoController {
     }
     //删除用户信息
     @PostMapping("/deleteUserinfo")
-    public Object deleteUserinfo(@RequestBody Userinfo userinfo) {
+    public Object deleteUserinfo(@RequestBody Map<String,Userinfo> map) {
         JSONObject jsonObject=new JSONObject();
+        Userinfo userinfo=map.get("userinfo");
 //        List<Userinfo> userinfoForBase=userinfoService.selectByName(userinfo.getRealname());
         Userinfo userinfoForBase=userinfoService.selectByPrimaryKey(userinfo.getId());
         if(userinfoForBase==null) {
@@ -75,8 +77,9 @@ public class UserinfoController {
     }
     //修改用户信息
     @PostMapping("/updateUserinfo")
-    public Object updateUserinfo(@RequestBody Userinfo userinfo) {
+    public Object updateUserinfo(@RequestBody Map<String,Userinfo> map) {
         JSONObject jsonObject=new JSONObject();
+        Userinfo userinfo=map.get("userinfo");
 //        List<Userinfo> userinfoForBase=userinfoService.selectByName(userinfo.getRealname());
         Userinfo userinfoForBase=userinfoService.selectByPrimaryKey(userinfo.getId());
         if(userinfoForBase==null) {
@@ -96,15 +99,18 @@ public class UserinfoController {
     public Object selectByName(@RequestBody Userinfo userinfo) {
         JSONObject jsonObject=new JSONObject();
         List<Userinfo> UserinfoResult=userinfoService.selectByName(userinfo.getRealname());
-        if(UserinfoResult.size()==0) {
+        int result=UserinfoResult.size();
+        if(result==0) {
             jsonObject.put("message", "该用户信息不存在！");
             jsonObject.put("code", "400");
+            jsonObject.put("total",result);
             return jsonObject;
         }
         else {
             jsonObject.put("message", "成功！");
             jsonObject.put("code", "200");
             jsonObject.put("userinfo",UserinfoResult);
+            jsonObject.put("total",result);
             return jsonObject;
         }
     }
@@ -115,17 +121,32 @@ public class UserinfoController {
         String Size=jsonObject.get("pageSize").toString();
         Integer pageNum=Integer.parseInt(Num);
         Integer pageSize=Integer.parseInt(Size);
-        return  userinfoService.selectAllUserinfo(pageNum,pageSize);
+        Integer pageTotal=userinfoService.getNumofUser();
+//        Integer pageTotal=0;
+//        if((UserCount/pageSize)==0){
+//            pageTotal=UserCount/pageSize;
+//        }
+//        else{
+//            pageTotal=UserCount/pageSize+1;
+//        }
+        JSONObject jso=new JSONObject();
+        List<Userinfo> UserinfoResult=userinfoService.selectAllUserinfo(pageNum,pageSize);
+        jso.put("pageTotal",pageTotal);
+        jso.put("userinfo",UserinfoResult);
+        return  jso;
     }
     //批量删除用户信息表
     @PostMapping("/deletebatch")
-    public Object deletebatch(@RequestBody JSONObject ids){
+    public Object deletebatch(@RequestBody Map<String,List<Integer> > map){
         JSONObject jsonObject=new JSONObject();
-        List<Integer> list=new ArrayList<Integer>();
-        String[] stids=(ids.get("ids").toString()).split(",");
-        for(int i=0;i<stids.length;i++){
-            list.add(Integer.parseInt(stids[i]));
-        }
+//        List<Integer> list=new ArrayList<Integer>();
+        List<Integer> list=map.get("ids");
+//        String[] stids=((ids.get("ids").toString()).replaceAll("\\[", "").replaceAll("\\]", "")).split(",");
+//        for(int i=0;i<list.size();i++){
+//            //System.out.print(stids[i]);
+////            list.add(Integer.parseInt(stids[i]));
+//            System.out.print(list.get(i));
+//        }
         Integer count=userinfoService.deleteBatch(list);
         if(count<=0){
             jsonObject.put("message","批量删除失败！");

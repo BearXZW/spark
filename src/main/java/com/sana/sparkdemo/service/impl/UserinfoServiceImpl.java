@@ -66,4 +66,9 @@ public class UserinfoServiceImpl implements UserinfoService {
 //        }
         return userinfoMapper.deleteBatch(ids);
     }
+
+    @Override
+    public int getNumofUser() {
+        return userinfoMapper.getNumofUser();
+    }
 }

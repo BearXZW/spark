@@ -20,4 +20,6 @@ public interface UserinfoService {
 
     //批量删除用户
     int deleteBatch(List<Integer> ids);
+    //获取用户数量
+    int getNumofUser();
 }

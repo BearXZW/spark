@@ -5,6 +5,7 @@ import java.net.InetAddress;
 
 import java.net.UnknownHostException;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import java.util.Properties;
@@ -15,32 +16,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 
-import org.hyperic.sigar.CpuInfo;
-
-import org.hyperic.sigar.CpuPerc;
-
-import org.hyperic.sigar.FileSystem;
-
-import org.hyperic.sigar.FileSystemUsage;
-
-import org.hyperic.sigar.Mem;
-
-import org.hyperic.sigar.NetFlags;
-
-import org.hyperic.sigar.NetInterfaceConfig;
-
-import org.hyperic.sigar.NetInterfaceStat;
-
-import org.hyperic.sigar.OperatingSystem;
-
-import org.hyperic.sigar.Sigar;
-
-import org.hyperic.sigar.SigarException;
-
-import org.hyperic.sigar.Swap;
+import org.hyperic.sigar.*;
 
 import org.springframework.stereotype.Controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-
+@CrossOrigin
 @RequestMapping(value = "/SystemInfo")
 
 public class SystemController {
@@ -159,29 +140,33 @@ public class SystemController {
 
             JSONObject jso = new JSONObject();
 
-            jso.put("mhz", info.getMhz()); //CPU的总量MHz
-
-            jso.put("company", info.getVendor()); //CPU的厂商
-
-            jso.put("model", info.getModel()); //CPU型号类别
-
-            jso.put("cache.size", info.getCacheSize()); // 缓冲缓存数量
+//            jso.put("mhz", info.getMhz()); //CPU的总量MHz
+//
+//            jso.put("company", info.getVendor()); //CPU的厂商
+//
+//            jso.put("model", info.getModel()); //CPU型号类别
+//
+//            jso.put("cache.size", info.getCacheSize()); // 缓冲缓存数量
 
             CpuPerc cpu = cpuList[i];
 
-            jso.put("freq.user", CpuPerc.format(cpu.getUser())); //CPU的用户使用率
+            jso.put("CpuCore", (i+1));//CPU的第几块核心
 
-            jso.put("freq.sys", CpuPerc.format(cpu.getSys())); //CPU的系统使用率
+            jso.put("UserUsage", CpuPerc.format(cpu.getUser())); //CPU的用户使用率
 
-            jso.put("freq.wait", CpuPerc.format(cpu.getWait())); //CPU的当前等待率
+            jso.put("SystemUsage", CpuPerc.format(cpu.getSys())); //CPU的系统使用率
 
-            jso.put("freq.nice", CpuPerc.format(cpu.getNice())); //CPU的当前错误率
+//            jso.put("freq.wait", CpuPerc.format(cpu.getWait())); //CPU的当前等待率
+//
+//            jso.put("freq.nice", CpuPerc.format(cpu.getNice())); //CPU的当前错误率
+//
+//            jso.put("freq.idle", CpuPerc.format(cpu.getIdle())); //CPU的当前空闲率
 
-            jso.put("freq.idle", CpuPerc.format(cpu.getIdle())); //CPU的当前空闲率
-
-            jso.put("freq.combined", CpuPerc.format(cpu.getCombined())); //CPU总的使用率
+            jso.put("TotalUsage", CpuPerc.format(cpu.getCombined())); //CPU总的使用率
 
             jsonArray.add(jso);
+
+
 
         }
 
@@ -207,30 +192,33 @@ public class SystemController {
         Properties props = System.getProperties();
 
         JSONObject jsonObject = new JSONObject();
+        DecimalFormat df = new DecimalFormat("#.00");
 
-        jsonObject.put("jvm.memory.total", r.totalMemory()/(1024 * 1024L)); //JVM可以使用的总内存
+        jsonObject.put("JvmTotal", df.format((double)r.totalMemory()/(1024 * 1024L))+"M"); //JVM可以使用的总内存
 
-        jsonObject.put("jvm.memory.free", r.freeMemory()/(1024 * 1024L)); //JVM可以使用的剩余内存
+        jsonObject.put("JvmFree", df.format((double)r.freeMemory()/(1024 * 1024L))+"M"); //JVM可以使用的剩余内存
 
-//        jsonObject.put("jvm.memory.used", r.usedMemory()/(1024*1024L));
+        jsonObject.put("JvmUsed", df.format((double)(r.totalMemory()-r.freeMemory())/(1024 * 1024L))+"M"); //JVM已经使用的内存大小
 
-        jsonObject.put("jvm.processor.avaliable", r.availableProcessors()); //JVM可以使用的处理器个数
+        // jsonObject.put("jvm.memory.used", r.usedMemory()/(1024*1024L));
 
-        jsonObject.put("jvm.java.version", props.getProperty("java.version")); //Java的运行环境版本
-
-        jsonObject.put("jvm.java.vendor", props.getProperty("java.vendor")); //Java的运行环境供应商
-
-        jsonObject.put("jvm.java.home", props.getProperty("java.home")); //Java的安装路径
-
-        jsonObject.put("jvm.java.specification.version", props.getProperty("java.specification.version")); //Java运行时环境规范版本
-
-        jsonObject.put("jvm.java.class.path", props.getProperty("java.class.path")); //Java的类路径
-
-        jsonObject.put("jvm.java.library.path", props.getProperty("java.library.path")); //Java加载库时搜索的路径列表
-
-        jsonObject.put("jvm.java.io.tmpdir", props.getProperty("java.io.tmpdir")); //默认的临时文件路径
-
-        jsonObject.put("jvm.java.ext.dirs", props.getProperty("java.ext.dirs")); //扩展目录的路径
+//        jsonObject.put("jvm.processor.avaliable", r.availableProcessors()); //JVM可以使用的处理器个数
+//
+//        jsonObject.put("jvm.java.version", props.getProperty("java.version")); //Java的运行环境版本
+//
+//        jsonObject.put("jvm.java.vendor", props.getProperty("java.vendor")); //Java的运行环境供应商
+//
+//        jsonObject.put("jvm.java.home", props.getProperty("java.home")); //Java的安装路径
+//
+//        jsonObject.put("jvm.java.specification.version", props.getProperty("java.specification.version")); //Java运行时环境规范版本
+//
+//        jsonObject.put("jvm.java.class.path", props.getProperty("java.class.path")); //Java的类路径
+//
+//        jsonObject.put("jvm.java.library.path", props.getProperty("java.library.path")); //Java加载库时搜索的路径列表
+//
+//        jsonObject.put("jvm.java.io.tmpdir", props.getProperty("java.io.tmpdir")); //默认的临时文件路径
+//
+//        jsonObject.put("jvm.java.ext.dirs", props.getProperty("java.ext.dirs")); //扩展目录的路径
 
 //        super.response2Client(response, jsonObject.toString());
         return jsonObject;
@@ -252,12 +240,13 @@ public class SystemController {
         Mem mem = sigar.getMem();
 
         JSONObject jsonObject = new JSONObject();
+        DecimalFormat df = new DecimalFormat("#.00");
+        //jsonObject.put("Memory",df.format((double)mem.getTotal() / (1024 * 1024 *1024L))+"G");
+        jsonObject.put("MemoryTotal", df.format((double)mem.getTotal() / (1024 * 1024 *1024L))+"G");// 内存总量
 
-        jsonObject.put("memory.total", mem.getTotal() / (1024 * 1024L));// 内存总量
+        jsonObject.put("MemoryUsed", df.format((double)mem.getUsed() / (1024 * 1024 *1024L))+"G");// 当前内存使用量
 
-        jsonObject.put("memory.used", mem.getUsed() / (1024 * 1024L));// 当前内存使用量
-
-        jsonObject.put("memory.free", mem.getFree() / (1024 * 1024L));// 当前内存剩余量
+        jsonObject.put("MemoryFree", df.format((double)mem.getFree() / (1024 * 1024 *1024L))+"G");// 当前内存剩余量
 
         Swap swap = sigar.getSwap();
 
@@ -507,6 +496,42 @@ public class SystemController {
         jsonObject.put("ethernet", jsonArray);
 
 //        super.response2Client(response, jsonObject.toString());
+        return jsonObject;
+    }
+
+    //返回前端需要的信息
+
+    @RequestMapping(value = "/info")
+    public Object SystemInfo(HttpServletResponse response) throws SigarException{
+
+        JSONObject jsonObject=new JSONObject();
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+
+            jsonObject.put("HostAddress", addr.getHostAddress()); //本机ip
+
+            jsonObject.put("HostName", addr.getHostName()); //本机主机名
+        }
+        catch(Exception e){
+        }
+        Sigar sigar = new Sigar();
+        CpuInfo infos[] = sigar.getCpuInfoList();
+        CpuPerc cpuList[] = sigar.getCpuPercList();
+        jsonObject.put("CpuModel", infos[0].getModel()); //CPU型号类别
+        jsonObject.put("CpuCore",infos.length);//cpu核心数
+
+        //mem 获取内存信息
+        Mem mem = sigar.getMem();
+        DecimalFormat df = new DecimalFormat("#.00");
+//        System.out.print(df.format(((double)mem.getTotal() / (1024 * 1024*1024L))));
+//        System.out.print(df.format(mem.getUsed() / (1024 * 1024*1024L)));
+        jsonObject.put("Memory",df.format((double)mem.getTotal() / (1024 * 1024 *1024L))+"G");//内存总容量
+
+        //jvm内存信息
+        Runtime r = Runtime.getRuntime();
+        jsonObject.put("JvmMemory",df.format((double)r.totalMemory()/(1024 * 1024))+"M"); //JVM可以使用的总内存
+
         return jsonObject;
     }
 

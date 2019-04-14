@@ -131,4 +131,8 @@
           #{ids,jdbcType=VARCHAR}
         </foreach>
   </delete>
+  <!--获取用户数量-->
+  <select id="getNumofUser" resultType="java.lang.Integer">
+      select count(*) from user_info
+  </select>
 </mapper>

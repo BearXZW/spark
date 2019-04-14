@@ -15,8 +15,8 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleMapper roleMapper;
     @Override
-    public void insertRole(Role role){
-        roleMapper.insert(role);
+    public int insertRole(Role role){
+        return roleMapper.insertSelective(role);
     }
     @Override
     public List<Role> findAllRole(int pageNum, int pageSize){
@@ -24,12 +24,12 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.selectAllRole();
     }
     @Override
-    public void updateRole(Role role){
-        roleMapper.updateByPrimaryKey(role);
+    public int updateRole(Role role){
+        return roleMapper.updateByPrimaryKeySelective(role);
     }
     @Override
-    public void deleteRole(Integer roleid){
-        roleMapper.deleteByPrimaryKey(roleid);
+    public int deleteRole(Integer roleid){
+        return roleMapper.deleteByPrimaryKey(roleid);
     }
     @Override
     public Role findRoleByRolename(Role role){
@@ -38,5 +38,16 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Role findRoleByRoleid(Integer roleid){
         return roleMapper.selectRoleByRoleId(roleid);
+    }
+
+    @Override
+    public int getRoleNum() { return roleMapper.getNumofRole(); }
+
+    @Override
+    public List<Role> getRoleByName(String rolename) { return roleMapper.getRoleByName(rolename); }
+
+    @Override
+    public int deleteBatch(List<Integer> ids) {
+        return roleMapper.deleteBatch(ids);
     }
 }

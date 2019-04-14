@@ -25,4 +25,13 @@ public interface RoleMapper {
     Role selectRoleByRolename(Role role);
 
     Role selectRoleByRoleId(Integer roleid);
+
+    //获取role的数量
+    int getNumofRole();
+
+    //通过rolename来获取role的信息
+    List<Role> getRoleByName(String rolename);
+
+    //批量删除
+    int deleteBatch(List<Integer> ids);
 }

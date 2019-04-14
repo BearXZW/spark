@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sana.sparkdemo.mapper.RoleMapper;
 import com.sana.sparkdemo.model.Role;
+import com.sana.sparkdemo.model.Userinfo;
 import com.sana.sparkdemo.service.RoleService;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -23,24 +26,16 @@ public class RoleController {
 
     //增加角色
     @PostMapping("/addRole")
-    public Object addrole(@RequestBody Role role){
+    public Object addrole(@RequestBody Map<String,Role> map){
         JSONObject jsonObject=new JSONObject();
-        Role rolefromBase=roleService.findRoleByRolename(role);
-        if(rolefromBase==null){
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            //对角色创建数据初始化
-            Date date = new Date();
-            role.setCreatetime(format.format(date));
-            role.setRolestatus(1);
-            role.setPermissions("1");
-            role.setUpdatetime(format.format(date));
-            roleService.insertRole(role);
-            jsonObject.put("message","增加成功");
-            jsonObject.put("code","200");
+        Role role=map.get("role");
+        if(roleService.insertRole(role)==0){
+            jsonObject.put("message","添加失败");
+            jsonObject.put("code","400");
         }
         else{
-            jsonObject.put("message","增加失败,该角色已经存在");
-            jsonObject.put("code","400");
+            jsonObject.put("message","添加成功");
+            jsonObject.put("code","200");
         }
         return jsonObject;
     }
@@ -52,15 +47,21 @@ public class RoleController {
         String  Size=jsonObject.get("pageSize").toString();
         Integer pageNum=Integer.parseInt(Num);
         Integer pageSize=Integer.parseInt(Size);
-        return roleService.findAllRole(pageNum,pageSize);
-
+        Integer pageTotal=roleService.getRoleNum();
+        JSONObject jso=new JSONObject();
+        jso.put("pageTotal",pageTotal);
+        List<Role> rolelist=roleService.findAllRole(pageNum,pageSize);
+        jso.put("rolelist",rolelist);
+        return jso;
     }
 
     //修改角色
     @PostMapping("/updateRole")
-    public Object updateRole(@RequestBody Role role){
+    public Object updateRole(@RequestBody Map<String,Role> map){
+
         JSONObject jsonObject=new JSONObject();
-        Role rolefromBase=roleService.findRoleByRolename(role);
+        Role role=map.get("role");
+        Role rolefromBase=roleService.findRoleByRoleid(role.getId());
         if(rolefromBase==null){
             jsonObject.put("message","修改失败，该角色不存在");
             jsonObject.put("code","400");
@@ -68,9 +69,11 @@ public class RoleController {
         else{
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             Date date = new Date();
-            rolefromBase.setUpdatetime(format.format(date));
+            rolefromBase.setCreatetime(role.getCreatetime());
+            rolefromBase.setUpdatetime(role.getUpdatetime());
             rolefromBase.setRolename(role.getRolename());
             rolefromBase.setRoledesc(role.getRoledesc());
+            rolefromBase.setRolestatus(role.getRolestatus());
             roleService.updateRole(rolefromBase);
             jsonObject.put("message","修改成功");
             jsonObject.put("code","200");
@@ -79,7 +82,8 @@ public class RoleController {
     }
     //删除角色
     @PostMapping("/deleteRole")
-    public Object deleteRole(@RequestBody Role role){
+    public Object deleteRole(@RequestBody  Map<String, Role> map){
+        Role role=map.get("role");
         JSONObject jsonObject=new JSONObject();
         Role rolefromBase=roleService.findRoleByRoleid(role.getId());
         if(rolefromBase==null){
@@ -89,6 +93,42 @@ public class RoleController {
         else{
             roleService.deleteRole(role.getId());
             jsonObject.put("message","删除成功");
+            jsonObject.put("code","200");
+        }
+        return jsonObject;
+    }
+
+    //通过rolename来获取角色
+    @PostMapping("/getRoleByName")
+    public Object getRoleByName(@RequestBody Role role){
+        String rolename=role.getRolename();
+        JSONObject jsonObject=new JSONObject();
+        List<Role> rolelist=roleService.getRoleByName(rolename);
+        int result=rolelist.size();
+        if(result==0){
+            jsonObject.put("message","查询失败，该角色不存在");
+            jsonObject.put("code","400");
+            jsonObject.put("total",result);
+        }
+        else{
+            jsonObject.put("message","查询成功");
+            jsonObject.put("rolelist",rolelist);
+            jsonObject.put("total",result);
+        }
+        return jsonObject;
+    }
+    //批量删除
+    @PostMapping("/deleteBatch")
+    public Object deleteBatch(@RequestBody Map<String,List<Integer> > map){
+        List<Integer> ids=map.get("ids");
+        JSONObject jsonObject=new JSONObject();
+        Integer count=roleService.deleteBatch(ids);
+        if(count<0){
+            jsonObject.put("message","批量删除失败");
+            jsonObject.put("code","400");
+        }
+        else{
+            jsonObject.put("message","批量删除成功");
             jsonObject.put("code","200");
         }
         return jsonObject;

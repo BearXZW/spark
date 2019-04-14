@@ -93,6 +93,8 @@ public class SystemInfoUtils {
 
             JSONObject jso = new JSONObject();
 
+            jso.put("core",infos.length);//CPU的核心数
+
             jso.put("mhz", info.getMhz()); //CPU的总量MHz
 
             jso.put("company", info.getVendor()); //CPU的厂商

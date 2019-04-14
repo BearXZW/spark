@@ -128,4 +128,21 @@
     select * from sys_role
     where id=#{id,jdbcType=INTEGER}
   </select>
+  <!--获取所有的角色-->
+  <select id="getNumofRole" resultType="java.lang.Integer">
+    select count(*) from sys_role
+  </select>
+  <!--通过rolename来获取数据-->
+  <select id="getRoleByName" resultMap="BaseResultMap"  parameterType="java.lang.String">
+    select * from sys_role
+    where rolename=#{rolename,jdbcType=VARCHAR}
+  </select>
+  <!--批量删除-->
+  <delete id="deleteBatch" parameterType="java.util.List">
+    delete  from sys_role
+    where id in
+        <foreach collection="list" item="ids"  open="(" close=")" separator=",">
+          #{ids,jdbcType=VARCHAR}
+        </foreach>
+  </delete>
 </mapper>

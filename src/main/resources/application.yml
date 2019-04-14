@@ -2,6 +2,7 @@ server:
   port: 8081
   tomcat:
     uri-encoding: UTF-8
+    connection-timeout: 100000
 spring:
   datasource:
       type: com.alibaba.druid.pool.DruidDataSource
@@ -41,3 +42,4 @@ pagehelper:
     resasonable: true
     support-methods-arguments: true
     params: count-countSql
+
